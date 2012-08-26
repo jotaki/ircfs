@@ -40,13 +40,13 @@ Where [options] can be one of:
        -l <level>      -- Set log level (0:quiet, 7:noisy) (default: 5)    
        -b <burst>      -- Queue burst (default: 4)                         
        -w <seconds>    -- Wait <seconds> before reading file to channel.    
-                          (The default value for this is: 6667)               
+                          (The default value for this is: 20)               
        -D              -- Dry run, just print run time options and exit.    
                                                                             
 <connect line> looks something like this: <nickname>@<server>[:port]        
        <nickname>      -- Defines the Nickname/Username/Realname to be used.
        <server>        -- The IRC host to connect to.                       
-       <port>          -- The port to connect on. (default: 20)             
+       <port>          -- The port to connect on. (default: 6667)             
                                                                             
 The supplied <directory> should not exist. It will be created by IrcFS.     
                                                                             
@@ -56,5 +56,6 @@ connect line must come before the directory. Example:
                ircfs nk@irc.server.net:6668 /tmp/server -f                     
                ircfs nk@irc.server.net:6668 -f /tmp/server                     
                ircfs -f nk@irc.server.net:6668 /tmp/server                     
-               ircfs nk@irc.server.net ~/irc/server -l 2
+               ircfs nk@irc.server.net ~/irc/server -l 2                       
+
 ```

@@ -194,8 +194,8 @@ void usage(app_config_p cfg, int exit_code)
 "               %s nk@irc.server.net ~/irc/server -l 2                       \n"
 "                                                                            \n"
 "                                                                            \n"
-"", cfg->appname, DEFAULT_LOG_LEVEL, DEFAULT_QUEUE_BURST, DEFAULT_IRC_PORT,
-	DEFAULT_WAIT_TIME, cfg->appname, cfg->appname, cfg->appname,
+"", cfg->appname, DEFAULT_LOG_LEVEL, DEFAULT_QUEUE_BURST, DEFAULT_WAIT_TIME,
+	DEFAULT_IRC_PORT, cfg->appname, cfg->appname, cfg->appname,
 	cfg->appname);
 
 	exit(exit_code);
