@@ -9,7 +9,7 @@ ircfs projectci@irc.freenode.net /tmp/freenode
 ircfs -h
 
 # Sending data
-cat <<EOF > /tmp/freenode/\#\#my_project
+```cat <<EOF > /tmp/freenode/\#\#my_project
 This line will get sent to ##my_project
 on the ol' irc.freenode.net. 
 So will this line.
@@ -19,6 +19,7 @@ And so on.
 And so on.
 And so on.
 EOF
+```
 
 # Reporting bugs
 
