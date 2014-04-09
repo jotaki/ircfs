@@ -19,7 +19,8 @@ struct irc_dispatch_s dispatcher =
 
 static void pong_server(struct irc_s *irc)
 {
-	skprintf(*(int*)irc->data, "PONG %s\r\n", irc->message);
+	//hmm? this is probably bad casting.
+	skprintf((int)(unsigned long)irc->data, "PONG %s\r\n", irc->message);
 }
 
 void process_irc(int sd)
@@ -27,20 +28,16 @@ void process_irc(int sd)
 	char *buf = NULL;
 	struct irc_s *irc = NULL;
 
-	printf("getting data.\n");
-
-	buf = calloc(sizeof(char), 1025);
+	buf = calloc(sizeof(char), IRC_BUFFER_SIZE + 1);
 	if(buf == NULL) {
 		perror("malloc(3)");
 		return;
 	}
 
-	skgets(buf, 1024, sd);
-	printf("%s\n", buf);
-
+	skgets(buf, IRC_BUFFER_SIZE, sd);
 	irc = irc_parse(buf);
 	if(irc != NULL) {
-		irc->data = (void *) &sd;
+		irc->data = (void *)((unsigned long)sd);
 		irc_dispatch(irc, &dispatcher);
 
 		free(irc);
@@ -53,5 +50,6 @@ void process_irc(int sd)
 
 void process_file(int fd)
 {
+	fd = fd;
 }
 
