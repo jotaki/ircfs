@@ -6,6 +6,7 @@
 #include "socket.h"
 #include "irc.h"
 #include "ircfs.h"
+#include "queue.h"
 
 static void pong_server(struct irc_s *irc);
 
@@ -56,8 +57,9 @@ void process_irc(int sd)
 
 int process_file(int fd, int sd)
 {
-	char buf[BUFSIZ];
+	char buf[BUFSIZ], * path;
 	struct inotify_event *i_event = (struct inotify_event *) buf;
+	int rc = 0;
 
 	if(read(fd, buf, sizeof buf) < 0)
 		return 0;
@@ -65,16 +67,24 @@ int process_file(int fd, int sd)
 	if(i_event->len == 0)
 		return 0;
 
-	printf("Processing '%s'\n", i_event->name);
+	path = full_path(i_event->name);
+	if(path == NULL)
+		return 0;
 
 	if(i_event->name[0] == '#') {
-		skprintf(sd, "JOIN %s\r\n", i_event->name);
+		if(join_channel())
+			skprintf(sd, "JOIN %s\r\n", i_event->name);
+
 		send_file(i_event->name);
 	} else if(strcmp(i_event->name, "quit") == 0) {
 		skprintf(sd, "QUIT :Leaving\r\n");
-		return 1;
+		++rc;
 	}
 
-	return 0;
+	remove(path);
+	free(path);
+	path = NULL;
+
+	return rc;
 }
 

@@ -43,8 +43,12 @@ void send_file(const char * const filename)
 		}
 		queue_add(/* channel */ filename, buf);
 	}
+	queue_add(filename, NULL);
+	fclose(fp);
+	remove(path);
 
 	free(path);
 	free(buf);
 	path = buf = NULL;
+	fp = NULL;
 }

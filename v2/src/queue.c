@@ -3,6 +3,7 @@
 
 #include "queue.h"
 #include "socket.h"
+#include "ircfs.h"
 
 static char g_full_path[MAX_PATH_NAME + 1] = { 0 };
 static struct queue_object_s * g_queue = NULL;
@@ -35,7 +36,7 @@ void queue_add(const char * const channel, const char * const data)
 	}
 
 	if(data == NULL)
-		q->buffer = data;
+		q->buffer = NULL;
 	else {
 		q->buffer = calloc(strlen(data) + 1, sizeof(char));
 		if(q->buffer == NULL) {
@@ -45,10 +46,10 @@ void queue_add(const char * const channel, const char * const data)
 
 			return;
 		}
+		strcpy(q->buffer, data);
 	}
 
 	strcpy(q->target, channel);
-	strcpy(q->buffer, data);
 
 	if(g_queue == NULL)
 		g_queue = q;
@@ -76,7 +77,7 @@ void send_queue(int sd)
 					q->target, q->buffer);
 			free(q->buffer);
 			q->buffer = NULL;
-		} else
+		} else if(join_channel())
 			skprintf(sd, "PART %s Leaving\r\n", q->target);
 
 		tmp = q->next;

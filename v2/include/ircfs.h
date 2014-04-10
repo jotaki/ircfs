@@ -52,4 +52,11 @@ void send_file(const char * const filename);
  */
 void main_loop(int sd, int fd);
 
+/*
+ * no join stuff
+ */
+void disable_join();
+void enable_join();
+int join_channel();
+
 #endif	/* !IRCFS_H_ */

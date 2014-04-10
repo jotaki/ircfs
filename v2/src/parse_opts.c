@@ -49,9 +49,9 @@ static char * server_pass()
 void parse_opts(int argc, char *argv[], struct irc_settings_s **irc_settings,
 		char ** mount_dir)
 {
-	int opt, has_pass = 0;
+	int opt, has_pass = 0, no_join = 0;
 
-	while((opt = getopt(argc, argv, "hd:p")) > 0) {
+	while((opt = getopt(argc, argv, "hd:p!")) > 0) {
 		switch(opt) {
 		case 'h':
 			usage(argv[0]);
@@ -65,6 +65,11 @@ void parse_opts(int argc, char *argv[], struct irc_settings_s **irc_settings,
 		case 'd':
 			*mount_dir = optarg;
 			break;
+
+		case '!':
+			++no_join;
+			break;
+			
 
 		default:
 			usage(argv[0]);
@@ -85,4 +90,7 @@ void parse_opts(int argc, char *argv[], struct irc_settings_s **irc_settings,
 
 	if(has_pass)
 		(*irc_settings)->password = server_pass();
+
+	if(no_join)
+		disable_join();
 }
