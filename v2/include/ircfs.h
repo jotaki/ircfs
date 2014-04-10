@@ -37,10 +37,15 @@ int watch_dir(const char * const mount_dir, int * watcher, int * fd);
 void stop_watch_dir(const char * const mount_dir, int * watcher, int * fd);
 
 /*
- * process IRC socket and File creation
+ * process IRC socket and File writing.
  */
 void process_irc(int sd);
-void process_file(int sd);
+int process_file(int fd, int sd);
+
+/*
+ * send file
+ */
+void send_file(const char * const filename);
 
 /*
  * main loop

@@ -2,6 +2,7 @@
 #include <sys/select.h>
 
 #include "ircfs.h"
+#include "queue.h"
 
 void main_loop(int sd, int fd)
 {
@@ -23,12 +24,14 @@ void main_loop(int sd, int fd)
 			perror("select(2) failed");
 			continue;
 		} else if(r == 0) {
+			send_queue(sd);
 			continue;
 		}
 
 		if(FD_ISSET(sd, &fdrd))
 			process_irc(sd);
 		else if(FD_ISSET(fd, &fdrd))
-			process_file(fd);
+			if(process_file(fd, sd))
+				break;
 	}
 }

@@ -6,6 +6,7 @@
 
 #include "ircfs.h"
 #include "socket.h"
+#include "queue.h"
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +48,11 @@ int main(int argc, char *argv[])
 	}
 
 	/*
+	 * assign mount dir to path
+	 */
+	set_full_path(mount_dir);
+
+	/*
 	 * Some basic IRC bootstrap
 	 */
 
@@ -66,8 +72,10 @@ int main(int argc, char *argv[])
 	skprintf(sd, "USER %s 0 0 :%s\r\n", settings->nickname,
 			settings->nickname);
 
-
-	main_loop(sd, ircfd);
+	/*
+	 * run the main loop for ircfs
+	 */
+	main_loop(sd, watcher);
 
 	/*
 	 * shutdown

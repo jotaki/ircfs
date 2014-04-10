@@ -22,7 +22,7 @@ int watch_dir(const char * const mount_dir, int * watcher, int * fd)
 		return 1;
 	}
 
-	*fd = inotify_add_watch(*watcher, mount_dir, IN_ALL_EVENTS);
+	*fd = inotify_add_watch(*watcher, mount_dir, IN_CLOSE_WRITE);
 	if(0 > *fd) {
 		remove(mount_dir);
 		close(*watcher);

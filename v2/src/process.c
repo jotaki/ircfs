@@ -1,7 +1,11 @@
+#include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <sys/inotify.h>
 
 #include "socket.h"
 #include "irc.h"
+#include "ircfs.h"
 
 static void pong_server(struct irc_s *irc);
 
@@ -35,6 +39,8 @@ void process_irc(int sd)
 	}
 
 	skgets(buf, IRC_BUFFER_SIZE, sd);
+	printf("%s\n", buf);
+
 	irc = irc_parse(buf);
 	if(irc != NULL) {
 		irc->data = (void *)((unsigned long)sd);
@@ -48,8 +54,27 @@ void process_irc(int sd)
 	buf = NULL;
 }
 
-void process_file(int fd)
+int process_file(int fd, int sd)
 {
-	fd = fd;
+	char buf[BUFSIZ];
+	struct inotify_event *i_event = (struct inotify_event *) buf;
+
+	if(read(fd, buf, sizeof buf) < 0)
+		return 0;
+
+	if(i_event->len == 0)
+		return 0;
+
+	printf("Processing '%s'\n", i_event->name);
+
+	if(i_event->name[0] == '#') {
+		skprintf(sd, "JOIN %s\r\n", i_event->name);
+		send_file(i_event->name);
+	} else if(strcmp(i_event->name, "quit") == 0) {
+		skprintf(sd, "QUIT :Leaving\r\n");
+		return 1;
+	}
+
+	return 0;
 }
 
