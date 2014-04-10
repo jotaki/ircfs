@@ -1,0 +1,6 @@
+Add better logging (error vs info)
+Add error handling (cycle on IRC disconnection?)
+Add signal handling (SIGINT / SIGTERM should create <mount_dir>/quit)
+Add daemonizing ability.
+
+Other things?
