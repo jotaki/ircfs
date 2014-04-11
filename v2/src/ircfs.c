@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <signal.h>
+#include <errno.h>
 
 #include "ircfs.h"
 #include "socket.h"
@@ -33,6 +35,12 @@ int main(int argc, char *argv[])
 		free_irc_settings(&settings);
 		return 1;
 	}
+
+	/*
+	 * setup signals
+	 */
+	signal(SIGINT, sig_quit_irc);
+	signal(SIGTERM, sig_quit_irc);
 
 	/*
 	 * connect to server
@@ -85,4 +93,27 @@ int main(int argc, char *argv[])
 	free_irc_settings(&settings);
 
 	return 0;
+}
+
+/*
+ * maybe this is sneaky and stupid?
+ */
+void sig_quit_irc(int signo)
+{
+	FILE *fp = NULL;
+	char *path = NULL;
+
+	path = full_path("quit");
+	if(path == NULL)
+		exit(ENOMEM);
+
+	fp = fopen(path, "w");
+	if(fp) {
+		fprintf(fp, "%d\n", signo);
+		fclose(fp);
+		fp = NULL;
+	}
+
+	free(path);
+	path = NULL;
 }

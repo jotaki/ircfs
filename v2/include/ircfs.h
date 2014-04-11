@@ -59,4 +59,9 @@ void disable_join();
 void enable_join();
 int join_channel();
 
+/*
+ * signals
+ */
+void sig_quit_irc(int signo);
+
 #endif	/* !IRCFS_H_ */
